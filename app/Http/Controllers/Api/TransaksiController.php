@@ -13,10 +13,11 @@ class TransaksiController extends Controller
      */
     public function index()
     {
-        $data = Transaksi::join('menus', 'transaksis.menu_id', '=', 'menus.id')
-            ->selectRaw('count(menus.id) as jumlah, menus.name, menus.price, menus.image')
+        $data = Transaksi::selectRaw('count(menus.id) as jumlah, menus.name, menus.price, menus.image')
+            ->join('menus', 'transaksis.menu_id', '=', 'menus.id')
             ->groupBy('menus.id')
             ->get();
+        // dd($data);
         return response($data, 200);
     }
 
@@ -31,7 +32,7 @@ class TransaksiController extends Controller
         $data = Transaksi::create([
             'menu_id' => $request->menu_id
         ]);
-         return response($data, 200);
+        return response($data, 200);
     }
 
     /**
@@ -57,6 +58,5 @@ class TransaksiController extends Controller
     {
         Transaksi::truncate();
         return response()->json(['message' => 'Transaksi deleted successfully'], 200);
-
     }
 }
