@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Menu;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CloudinaryStorage;
 use Symfony\Component\HttpFoundation\Response;
 
 class MenuController extends Controller
@@ -32,12 +33,15 @@ class MenuController extends Controller
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
         if ($request->hasFile('image')) {
-            $image_path = $request->file('image')->store('image', 'public');
+            // $image_path = $request->file('image')->store('image', 'public');
+            $image  = $request->file('image');
+            $result = CloudinaryStorage::upload($image->getRealPath(), $image->getClientOriginalName()); 
         }
+        
         $data = Menu::create([
             'name' => $request->name,
             'price' => $request->price,
-            'image' => $image_path,
+            'image' => $result,
         ]);
 
         if ($data) {
