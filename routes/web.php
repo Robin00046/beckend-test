@@ -1,9 +1,12 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\Testing;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\ProfileController;
+use App\Mail\TestMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +31,16 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/mail', function () {
+    $details = [
+        'title' => 'Success',
+        'content' => 'This is an email testing using Laravel-Brevo',
+    ];
+
+    Mail::to('robin.fals.wae@gmail.com')->send(new \App\Mail\TestMail($details));
+
+    return 'Email sent at ' . now();
+})->name('mail');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,4 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::get('/test', [Testing::class, 'index'])->name('tetsing');
+Route::get('/test1', [Testing::class, 'test'])->name('tets');
+
+require __DIR__ . '/auth.php';
